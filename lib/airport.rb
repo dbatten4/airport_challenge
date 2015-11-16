@@ -1,4 +1,8 @@
+require_relative 'weather'
+
 class Airport
+
+  include Weather
 
   DEFAULT_CAPACITY = 20
 
@@ -10,17 +14,14 @@ class Airport
   end
 
   def make_land(plane)
-    fail 'Plane has already landed' if @planes.include? plane
-    fail 'Airport is full' if airport_full?
-    fail 'The weather is too stormy' if stormy?
+    landing_check(plane)
     plane.land
     @planes << plane
     plane
   end
 
   def make_take_off(plane)
-    fail 'Plane has already taken off' if plane.flying?
-    fail 'The weather is too stormy' if stormy?
+    take_off_check(plane)
     plane.take_off
     @planes.delete(plane)
     plane
@@ -34,13 +35,15 @@ class Airport
     @planes.count >= capacity
   end
 
-  def weather
-    [:stormy, :sunny].sample 
+  def landing_check(plane)
+    fail 'Plane has already landed' if @planes.include? plane
+    fail 'Airport is full' if airport_full?
+    fail 'The weather is too stormy' if stormy?
   end
 
-  def stormy?
-    weather == :stormy ? true : false
+  def take_off_check(plane)
+    fail 'Plane has already taken off' if plane.flying?
+    fail 'The weather is too stormy' if stormy?
   end
-
-
+  
 end
